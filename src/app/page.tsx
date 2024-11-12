@@ -1,17 +1,16 @@
-import { Button } from "@/components/ui/button";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+import { getCurrent } from "@/features/auth/actions";
+import { UserButton } from "@/features/auth/components/user-button";
+
+export default async function Home() {
+  const user = await getCurrent();
+
+  if (!user) redirect("/sign-in");
+
   return (
-    <>
-      <Button variant="secondary">Click Me 123</Button>
-
-      <Button variant="ghost">Click Me</Button>
-
-      <Button variant="muted">Click Me</Button>
-
-      <Button variant="teritary" size="xs">
-        Click Me
-      </Button>
-    </>
+    <div>
+      <UserButton />
+    </div>
   );
 }
