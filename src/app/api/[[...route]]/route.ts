@@ -1,7 +1,8 @@
 import { Hono } from "hono";
 import { handle } from "hono/vercel";
 
-export const runtime = "edge";
+// below line was responsible for the zod validate error
+// export const runtime = "edge";
 
 import auth from "@/features/auth/server/route";
 import workspaces from "@/features/workspaces/server/route";

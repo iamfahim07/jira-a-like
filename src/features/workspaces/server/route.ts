@@ -37,7 +37,7 @@ const app = new Hono().post(
       ).toString("base64")}`;
     }
 
-    const workspaces = await databases.createDocument(
+    const workspace = await databases.createDocument(
       DATABASE_ID,
       WORKSPACES_ID,
       ID.unique(),
@@ -48,7 +48,7 @@ const app = new Hono().post(
       }
     );
 
-    return c.json({ data: workspaces });
+    return c.json({ data: workspace });
   }
 );
 
