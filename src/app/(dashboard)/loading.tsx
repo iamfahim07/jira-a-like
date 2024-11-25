@@ -1,6 +1,5 @@
 import { Loader } from "lucide-react";
 
-// dashboard loader
 const DashboardLoading = () => {
   return (
     <div className="h-full flex items-center justify-center">
