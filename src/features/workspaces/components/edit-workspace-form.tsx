@@ -20,9 +20,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useConfirm } from "@/hooks/use-confirm";
 import { cn } from "@/lib/utils";
 import { zodResolver } from "@hookform/resolvers/zod";
 
+import { useDeleteWorkspace } from "../api/use-delete-workspace";
 import { useUpdateWorkspace } from "../api/use-update-workspace";
 import { updateWorkspaceSchema } from "../schemas";
 import { Workspace } from "../types";
@@ -38,6 +40,14 @@ export const EditWorkspaceForm = ({
 }: EditWorkspaceFormProps) => {
   const router = useRouter();
   const { mutate, isPending } = useUpdateWorkspace();
+  const { mutate: deleteWorkspace, isPending: isDeletingWorkspace } =
+    useDeleteWorkspace();
+
+  const [DeleteDialog, confirmDelete] = useConfirm(
+    "Delete Workspace",
+    "This action cannot be undone.",
+    "destructive"
+  );
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -48,6 +58,24 @@ export const EditWorkspaceForm = ({
       image: initialValues.imageUrl ?? "",
     },
   });
+
+  const handleDelete = async () => {
+    const ok = await confirmDelete();
+
+    if (!ok) return;
+
+    deleteWorkspace(
+      {
+        param: { workspaceId: initialValues.$id },
+      },
+      {
+        onSuccess: () => {
+          // router.push("/");
+          window.location.href = "/";
+        },
+      }
+    );
+  };
 
   const onSubmit = (values: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
@@ -80,6 +108,7 @@ export const EditWorkspaceForm = ({
 
   return (
     <div className="flex flex-col gap-y-4">
+      <DeleteDialog />
       <Card className="w-full h-full border-none shadow-none">
         <CardHeader className="flex flex-row items-center gap-x-4 p-7 space-y-0">
           <Button
@@ -227,8 +256,8 @@ export const EditWorkspaceForm = ({
               size="sm"
               variant="destructive"
               type="button"
-              disabled={isPending}
-              onClick={() => {}}
+              disabled={isPending || isDeletingWorkspace}
+              onClick={handleDelete}
             >
               Delete Workspace
             </Button>
