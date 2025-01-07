@@ -16,8 +16,9 @@ const ProjectIdSettingsPage = async ({
   const user = await getCurrent();
   if (!user) redirect("/sign-in");
 
+  const { projectId } = await params;
   const initialValues = await getProject({
-    projectId: params.projectId,
+    projectId,
   });
 
   return (
