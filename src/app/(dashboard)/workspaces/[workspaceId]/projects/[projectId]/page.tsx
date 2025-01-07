@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { getCurrent } from "@/features/auth/queries";
 import { ProjectAvatar } from "@/features/projects/components/project-avatar";
 import { getProject } from "@/features/projects/queries";
+import { TaskViewSwitcher } from "@/features/tasks/components/task-view-switcher";
 
 interface ProjectIdPageProps {
   params: { projectId: string };
@@ -15,8 +16,9 @@ const ProjectIdPage = async ({ params }: ProjectIdPageProps) => {
   const user = await getCurrent();
   if (!user) redirect("/sign-in");
 
+  const { projectId } = await params;
   const initialValues = await getProject({
-    projectId: params.projectId,
+    projectId,
   });
 
   if (!initialValues) {
@@ -45,6 +47,7 @@ const ProjectIdPage = async ({ params }: ProjectIdPageProps) => {
           </Button>
         </div>
       </div>
+      <TaskViewSwitcher />
     </div>
   );
 };
