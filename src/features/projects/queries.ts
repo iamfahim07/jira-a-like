@@ -1,3 +1,5 @@
+// Unused file
+
 import { DATABASE_ID, PROJECTS_ID } from "@/config";
 import { getMember } from "@/features/members/utils";
 import { createSessionClient } from "@/lib/appwrite";

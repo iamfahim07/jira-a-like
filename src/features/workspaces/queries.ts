@@ -29,6 +29,7 @@ export const getWorkspaces = async () => {
   return workspaces;
 };
 
+// unused
 interface GetWorkspaceProps {
   workspaceId: string;
 }
@@ -57,6 +58,7 @@ export const getWorkspace = async ({ workspaceId }: GetWorkspaceProps) => {
   return workspace;
 };
 
+// unused
 interface GetWorkspaceInfoProps {
   workspaceId: string;
 }
