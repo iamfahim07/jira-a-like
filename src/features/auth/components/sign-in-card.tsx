@@ -113,7 +113,7 @@ export const SignInCard = () => {
           disabled={isPending}
           variant="secondary"
           size="lg"
-          className="w-full"
+          className="w-full hidden"
         >
           <FaGithub className="mr-2 size-5" />
           Login with Github

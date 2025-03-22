@@ -10,6 +10,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { snakeCaseToTitleCase } from "@/lib/utils";
 
+import { useGetProjects } from "@/features/projects/api/use-get-projects";
+import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { useNotificationModal } from "@/hooks/use-notification-modal";
+
 import { useCreateTaskModal } from "../hooks/use-create-task-modal";
 import { TaskStatus } from "../types";
 
@@ -38,7 +42,22 @@ export const KanbanColumnHeader = ({
   board,
   taskCount,
 }: KanbanColumnHeaderProps) => {
-  const { open } = useCreateTaskModal();
+  const workspaceId = useWorkspaceId();
+  const { open: createTask } = useCreateTaskModal();
+
+  const { data: projects, isLoading: isLoadingProjects } = useGetProjects({
+    workspaceId,
+  });
+
+  const { open: notification } = useNotificationModal({
+    title: "Project Required",
+    description:
+      "Please create a project before proceeding with task creation.",
+  });
+
+  const handleCreateTask = () => {
+    return projects?.total === 0 ? notification() : createTask();
+  };
 
   const icon = statusIconMap[board];
 
@@ -51,7 +70,13 @@ export const KanbanColumnHeader = ({
           {taskCount}
         </div>
       </div>
-      <Button onClick={open} variant="ghost" size="icon" className="size-5">
+      <Button
+        onClick={handleCreateTask}
+        variant="ghost"
+        size="icon"
+        className="size-5"
+        disabled={isLoadingProjects}
+      >
         <PlusIcon className="size-4 text-neutral-500" />
       </Button>
     </div>

@@ -4,6 +4,8 @@ import { formatDistanceToNow } from "date-fns";
 import { CalendarIcon, PlusIcon, SettingsIcon } from "lucide-react";
 import Link from "next/link";
 
+import { useNotificationModal } from "@/hooks/use-notification-modal";
+
 import { useGetMembers } from "@/features/members/api/use-get-members";
 import { MemberAvatar } from "@/features/members/components/member-avatar";
 import { Member } from "@/features/members/types";
@@ -72,14 +74,33 @@ interface TaskListProps {
 
 export const TaskList = ({ data, total }: TaskListProps) => {
   const workspaceId = useWorkspaceId();
+
+  const { data: projects, isLoading: isLoadingProjects } = useGetProjects({
+    workspaceId,
+  });
+
+  const { open: notification } = useNotificationModal({
+    title: "Project Required",
+    description:
+      "Please create a project before proceeding with task creation.",
+  });
   const { open: createTask } = useCreateTaskModal();
+
+  const handleCreateTask = () => {
+    return projects?.total === 0 ? notification() : createTask();
+  };
 
   return (
     <div className="flex flex-col gap-y-4 col-span-1">
       <div className="bg-muted rounded-lg p-4">
         <div className="flex items-center justify-between">
           <p className="text-lg font-semibold">Tasks ({total})</p>
-          <Button variant="muted" size="icon" onClick={createTask}>
+          <Button
+            variant="muted"
+            size="icon"
+            onClick={handleCreateTask}
+            disabled={isLoadingProjects}
+          >
             <PlusIcon className="size-4 text-neutral-400" />
           </Button>
         </div>
