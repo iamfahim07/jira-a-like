@@ -1,6 +1,8 @@
 import { Navbar } from "@/components/navbar";
 import { Sidebar } from "@/components/sidebar";
 
+import { NotificationModal } from "@/components/notification-modal";
+
 import { CreateProjectModal } from "@/features/projects/components/create-project-modal";
 import { CreateTaskModal } from "@/features/tasks/components/create-task-modal";
 import { EditTaskModal } from "@/features/tasks/components/edit-task-modal";
@@ -13,6 +15,7 @@ interface DashboardLayoutProps {
 const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   return (
     <div className="min-h-screen">
+      <NotificationModal />
       <CreateWorkspaceModal />
       <CreateProjectModal />
       <CreateTaskModal />

@@ -4,12 +4,15 @@ import { Loader, PlusIcon } from "lucide-react";
 import { useQueryState } from "nuqs";
 import { useCallback } from "react";
 
+import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { useProjectId } from "@/features/projects/hooks/use-project-id";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 
 import { DottedSeparator } from "@/components/dotted-separator";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import { useNotificationModal } from "@/hooks/use-notification-modal";
 
 import { DataFilters } from "./data-filters";
 
@@ -39,7 +42,21 @@ export const TaskViewSwitcher = ({
 
   const workspaceId = useWorkspaceId();
   const paramProjectId = useProjectId();
-  const { open } = useCreateTaskModal();
+  const { open: createTask } = useCreateTaskModal();
+
+  const { data: projects, isLoading: isLoadingProjects } = useGetProjects({
+    workspaceId,
+  });
+
+  const { open: notification } = useNotificationModal({
+    title: "Project Required",
+    description:
+      "Please create a project before proceeding with task creation.",
+  });
+
+  const handleCreateTask = () => {
+    return projects?.total === 0 ? notification() : createTask();
+  };
 
   const { mutate: bulkUpdate } = useBulkUpdateTasks();
 
@@ -79,7 +96,12 @@ export const TaskViewSwitcher = ({
               Calendar
             </TabsTrigger>
           </TabsList>
-          <Button onClick={open} size="sm" className="w-full lg:w-auto">
+          <Button
+            onClick={handleCreateTask}
+            size="sm"
+            className="w-full lg:w-auto"
+            disabled={isLoadingProjects}
+          >
             <PlusIcon className="size-4 mr-2" />
             New
           </Button>
